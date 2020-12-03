@@ -26,12 +26,16 @@ func Find2020EntriesAndMultiply(input []int) int {
 		return 0
 	}
 
-	// Initial naive approach
-	for i := 0; i < len(input); i++ {
-		for j := i + 1; j < len(input); j++ {
-			if input[i]+input[j] == 2020 {
-				return input[i] * input[j]
-			}
+	// Map approach
+	mappedInput := make(map[int]struct{}, len(input))
+	for _, i := range input {
+		mappedInput[i] = struct{}{}
+	}
+
+	for _, i := range input {
+		diff := 2020 - i
+		if _, ok := mappedInput[diff]; ok {
+			return i * diff // If diff matches an entry, then the pair has been found
 		}
 	}
 
