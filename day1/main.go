@@ -7,7 +7,7 @@ import (
 	"strconv"
 )
 
-const inputFile = "input.txt"
+const inputFile = "day1.txt"
 
 func main() {
 	input, err := loadInputFile(inputFile)
@@ -16,8 +16,8 @@ func main() {
 		return
 	}
 
-	fmt.Printf("The answer to the Day 1 puzzle: %d\n", SolveDay1Part1(input))
-	fmt.Printf("The answer to the Day 2 puzzle: %d\n", SolveDay1Part2(input))
+	fmt.Printf("The answer to the Day 1 part 1 puzzle: %d\n", SolveDay1Part1(input))
+	fmt.Printf("The answer to the Day 1 part 2 puzzle: %d\n", SolveDay1Part2(input))
 }
 
 // SolveDay1Part1 solves the Day 1 puzzle by finding two entries within the input slice that sum to 2020 and then returning their product.
