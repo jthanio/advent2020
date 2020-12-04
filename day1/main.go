@@ -1,16 +1,15 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
-	"strconv"
+
+	"github.com/jthanio/advent2020"
 )
 
 const inputFile = "day1.txt"
 
 func main() {
-	input, err := loadInputFile(inputFile)
+	input, err := advent2020.LoadIntInputFile(inputFile)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -57,24 +56,4 @@ func SolveDay1Part2(input []int) int {
 	}
 
 	return 0
-}
-
-// loadInputFile is a utility function that attempts to load a file of integers into a slice.
-func loadInputFile(fileName string) ([]int, error) {
-	file, err := os.Open(fileName)
-	if err != nil {
-		return nil, err
-	}
-
-	sc := bufio.NewScanner(file)
-	out := []int{}
-	for sc.Scan() {
-		i, err := strconv.Atoi(sc.Text()) // Parse the line
-		if err != nil {
-			return nil, err
-		}
-		out = append(out, i) // Add the parsed line to the output
-	}
-
-	return out, sc.Err()
 }

@@ -3,13 +3,15 @@ package main
 import (
 	"os"
 	"testing"
+
+	"github.com/jthanio/advent2020"
 )
 
 var realInput []string
 
 func TestMain(m *testing.M) {
 	var err error
-	realInput, err = loadInputFile(inputFile) // Load the test input data
+	realInput, err = advent2020.LoadStringInputFile(inputFile) // Load the test input data
 	if err != nil {
 		panic(err)
 	}

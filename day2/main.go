@@ -1,17 +1,17 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strconv"
 	"strings"
+
+	"github.com/jthanio/advent2020"
 )
 
 const inputFile = "day2.txt"
 
 func main() {
-	input, err := loadInputFile(inputFile)
+	input, err := advent2020.LoadStringInputFile(inputFile)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -114,20 +114,4 @@ func SolveDay2Part2(input []string) (int, error) {
 	}
 
 	return validCount, nil
-}
-
-// loadInputFile is a utility function that attempts to load a file line-by-line as a slice of strings
-func loadInputFile(fileName string) ([]string, error) {
-	file, err := os.Open(fileName)
-	if err != nil {
-		return nil, err
-	}
-
-	sc := bufio.NewScanner(file)
-	out := []string{}
-	for sc.Scan() {
-		out = append(out, sc.Text())
-	}
-
-	return out, sc.Err()
 }
