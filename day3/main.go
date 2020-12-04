@@ -19,7 +19,7 @@ func main() {
 	fmt.Printf("The answer to the Day 3 part 2 puzzle: %d\n", SolveDay3Part2(input))
 }
 
-// SolveDay3Part1 finds the number tree collisions in for the given input course.
+// SolveDay3Part1 finds the number of tree collisions in for the given input course.
 func SolveDay3Part1(input []string) int {
 	const xSlope = 3
 	const ySlope = 1
@@ -27,7 +27,7 @@ func SolveDay3Part1(input []string) int {
 	return simulateToboggan(input, xSlope, ySlope)
 }
 
-// SolveDay3Part2 finds the number tree collisions in for the given input course for each of the slopes and then multiplies the result together.
+// SolveDay3Part2 finds the number of tree collisions in for the given input course for each of the slopes and then multiplies the result together.
 func SolveDay3Part2(input []string) int {
 	slopes := []struct {
 		xSlope int
