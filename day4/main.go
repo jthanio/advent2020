@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/jthanio/advent2020"
+	"github.com/jthanio/advent2020/day4/passport"
 )
 
 const inputFile = "day4.txt"
@@ -17,70 +17,51 @@ func main() {
 	}
 
 	fmt.Printf("The answer to the Day 4 part 1 puzzle: %d\n", SolveDay4Part1(input))
-}
-
-type passport struct {
-	byr bool // Birth Year
-	iyr bool // Issue Year
-	eyr bool // Expiration Year
-	hgt bool // Height
-	hcl bool // Hair Color
-	ecl bool // Eye Color
-	pid bool // Passport ID
-	cid bool // Country ID (Optional)
-}
-
-// validate checks for matching fields in the given input string and updates the passport for each match.
-func (p *passport) validate(input string) {
-	if strings.Contains(input, "byr:") {
-		p.byr = true
-	}
-	if strings.Contains(input, "iyr:") {
-		p.iyr = true
-	}
-	if strings.Contains(input, "eyr:") {
-		p.eyr = true
-	}
-	if strings.Contains(input, "hgt:") {
-		p.hgt = true
-	}
-	if strings.Contains(input, "hcl:") {
-		p.hcl = true
-	}
-	if strings.Contains(input, "ecl:") {
-		p.ecl = true
-	}
-	if strings.Contains(input, "pid:") {
-		p.pid = true
-	}
-	if strings.Contains(input, "cid:") {
-		p.cid = true
-	}
-}
-
-// isValid checks if the passport has all of the required fields
-func (p *passport) isValid() bool {
-	return p.byr && p.iyr && p.eyr && p.hgt && p.hcl && p.ecl && p.pid
+	fmt.Printf("The answer to the Day 4 part 2 puzzle: %d\n", SolveDay4Part2(input))
 }
 
 // SolveDay4Part1 finds the number of valid passports in the given batch input
 func SolveDay4Part1(input []string) int {
 	var count int
-	p := &passport{}
+	p := &passport.Passport{}
 	for _, s := range input {
-		if s != "" {
-			p.validate(s) // Check for matching fields
-		} else {
+		if s == "" {
 			// Passport input ended, can attempt to validate
-			if p.isValid() {
+			if p.HasAllRequiredFields() {
 				count++
 			}
-			p = &passport{} // Start a new passport
+			p = &passport.Passport{} // Start a new passport
+		} else {
+			p.ValidateSimple(s) // Check for matching fields
 		}
 	}
 
 	// Must check if the final passport is valid
-	if p.isValid() {
+	if p.HasAllRequiredFields() {
+		count++
+	}
+
+	return count
+}
+
+// SolveDay4Part2 finds the number of valid passports in the given batch input, with stricter parsing rules
+func SolveDay4Part2(input []string) int {
+	var count int
+	p := &passport.Passport{}
+	for _, s := range input {
+		if s == "" {
+			// Passport input ended, can attempt to validate
+			if p.HasAllValidFields() {
+				count++
+			}
+			p = &passport.Passport{} // Start a new passport
+		} else {
+			p.ValidateStrict(s) // Check for matching fields
+		}
+	}
+
+	// Must check if the final passport is valid
+	if p.HasAllValidFields() {
 		count++
 	}
 
