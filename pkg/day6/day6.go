@@ -23,5 +23,31 @@ func SolveDay6Part1(input []string) int {
 
 // SolveDay6Part2 is not yet implemented.
 func SolveDay6Part2(input []string) int {
-	return 0
+	var total int
+	var sum int
+	group := map[rune]int{}
+	for _, s := range input {
+		if s == "" {
+			sum += countMax(group, total)
+			group = map[rune]int{} // Start a new group
+			total = 0
+		} else {
+			for _, r := range []rune(s) {
+				group[r]++ // Increment the entry by one
+			}
+			total++ // Increment the count of participants (lines)
+		}
+	}
+	sum += countMax(group, total)
+	return sum
+}
+
+func countMax(input map[rune]int, total int) int {
+	var sum int
+	for _, i := range input {
+		if i == total {
+			sum++
+		}
+	}
+	return sum
 }

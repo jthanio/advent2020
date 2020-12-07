@@ -68,3 +68,52 @@ func TestSolveDay6Part1(t *testing.T) {
 		})
 	}
 }
+
+func TestSolveDay6Part2(t *testing.T) {
+	type args struct {
+		input []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			name: "small example",
+			want: 6,
+			args: args{
+				input: []string{
+					"abc",
+					"",
+					"a",
+					"b",
+					"c",
+					"",
+					"ab",
+					"ac",
+					"",
+					"a",
+					"a",
+					"a",
+					"a",
+					"",
+					"b",
+				},
+			},
+		},
+		{
+			name: "real input",
+			want: 3520,
+			args: args{
+				input: realInput,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := SolveDay6Part2(tt.args.input); got != tt.want {
+				t.Errorf("SolveDay6Part2() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
