@@ -1,6 +1,6 @@
 package day6
 
-// SolveDay6Part1 reads group inputs and finds the total sum of all customs declarations.
+// SolveDay6Part1 reads group inputs and finds the total sum of all unique customs declarations in each group.
 func SolveDay6Part1(input []string) int {
 	var sum int
 	group := map[rune]struct{}{}
@@ -21,7 +21,7 @@ func SolveDay6Part1(input []string) int {
 	return sum
 }
 
-// SolveDay6Part2 is not yet implemented.
+// SolveDay6Part2 counts all customs declarations that every member in a group has made instead of just the total sum.
 func SolveDay6Part2(input []string) int {
 	var total int
 	var sum int
