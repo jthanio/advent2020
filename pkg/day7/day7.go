@@ -10,33 +10,56 @@ const bagColorShinyGold = "shiny gold" // The target color
 
 // SolveDay7Part1 parses the bag rules and counts the number of bag colors that can hold a shiny gold bag.
 func SolveDay7Part1(input []string) (int, error) {
-	graph := bagGraph{
+	graph, err := buildGraph(input)
+	if err != nil {
+		return 0, err
+	}
+
+	return graph.countBagsContainingTarget(bagColorShinyGold), nil
+}
+
+// SolveDay7Part2 parses the bad rules and counts the number of bags that are contained within a shiny gold bag.
+func SolveDay7Part2(input []string) (int, error) {
+	graph, err := buildGraph(input)
+	if err != nil {
+		return 0, err
+	}
+
+	return graph.countBagsContainedByTarget(bagColorShinyGold), nil
+}
+
+func buildGraph(input []string) (*bagGraph, error) {
+	graph := &bagGraph{
 		bags:  make(map[string]struct{}),
 		edges: make(map[string][]edge),
 	}
 	for _, i := range input {
 		color, err := parseBagColor(i)
 		if err != nil {
-			return 0, err
+			return nil, err
 		}
 		graph.addBag(color) // Add the bag identified by its color
 
 		contents, err := parseBagContents(i)
 		if err != nil {
-			return 0, err
+			return nil, err
 		}
 
 		for bag, count := range contents {
 			graph.addEdge(color, bag, count)
 		}
 	}
-
-	return graph.countContainingBags(bagColorShinyGold), nil
+	return graph, nil
 }
 
 type bagGraph struct {
 	bags  map[string]struct{}
 	edges map[string][]edge
+}
+
+type edge struct {
+	color string
+	count int
 }
 
 func (b *bagGraph) addEdge(parent, bag string, count int) {
@@ -47,25 +70,25 @@ func (b *bagGraph) addBag(bag string) {
 	b.bags[bag] = struct{}{}
 }
 
-// countContainingBags will traverse the graph to find all bags that can contain the requested color
-func (b *bagGraph) countContainingBags(target string) int {
+// countBagsContainingTarget will traverse the graph to find the count of bags that can contain the requested color
+func (b *bagGraph) countBagsContainingTarget(target string) int {
 	var count int
 	for color := range b.bags {
 		if color == target {
 			continue // Ignore the target, since there are no cyclic bags
 		}
-		if b.dfs(target, color) {
+		if b.containsTargetBag(target, color) {
 			count++
 		}
 	}
 	return count
 }
 
-func (b *bagGraph) dfs(target, color string) bool {
-	return b.dfsHelper(make(map[string]struct{}), target, color, 0) > 0
+func (b *bagGraph) containsTargetBag(target, color string) bool {
+	return b.containsTargetBagHelper(make(map[string]struct{}), target, color, 0) > 0
 }
 
-func (b *bagGraph) dfsHelper(visited map[string]struct{}, target, color string, count int) int {
+func (b *bagGraph) containsTargetBagHelper(visited map[string]struct{}, target, color string, count int) int {
 	if _, ok := visited[color]; ok {
 		return count
 	}
@@ -74,19 +97,30 @@ func (b *bagGraph) dfsHelper(visited map[string]struct{}, target, color string, 
 		count++
 	}
 	for _, edge := range b.edges[color] {
-		count = b.dfsHelper(visited, target, edge.color, count)
+		count = b.containsTargetBagHelper(visited, target, edge.color, count)
 	}
 	return count
 }
 
-type edge struct {
-	color string
-	count int
+// countBagsContainingTarget will traverse the graph to find the count of bags that are contained within the requested color
+func (b *bagGraph) countBagsContainedByTarget(target string) int {
+	var total int
+	for _, edge := range b.edges[target] {
+		total += edge.count + edge.count*b.countBagsContainedByTargetHelper(edge.color)
+	}
+	return total
 }
 
-// SolveDay7Part2 is not yet implemented
-func SolveDay7Part2(input []string) (int, error) {
-	return 0, nil
+func (b *bagGraph) countBagsContainedByTargetHelper(color string) int {
+	if len(b.edges[color]) == 0 {
+		return 0
+	}
+	var total int
+	for _, edge := range b.edges[color] {
+		total += edge.count
+		total += edge.count * b.countBagsContainedByTargetHelper(edge.color)
+	}
+	return total
 }
 
 func parseBagColor(line string) (string, error) {

@@ -83,8 +83,49 @@ func TestSolveDay7Part2(t *testing.T) {
 		wantErr bool
 	}{
 		{
+			name:    "tiny example",
+			want:    2,
+			wantErr: false,
+			args: args{
+				input: []string{
+					"shiny gold bags contain 2 dark violet bags.",
+					"dark violet bags contain no other bags.",
+				},
+			},
+		},
+		{
+			name:    "flat example",
+			want:    10,
+			wantErr: false,
+			args: args{
+				input: []string{
+					"shiny gold bags contain 1 dark violet bags, 2 muted yellow bags, 3 dull gold bags, 4 bright white bags.",
+					"dark violet bags contain no other bags.",
+					"muted yellow bags contain no other bags.",
+					"dull gold bags contain no other bags.",
+					"bright white bags contain no other bags.",
+				},
+			},
+		},
+		{
 			name:    "small example",
-			want:    0,
+			want:    126,
+			wantErr: false,
+			args: args{
+				input: []string{
+					"shiny gold bags contain 2 dark red bags.",
+					"dark red bags contain 2 dark orange bags.",
+					"dark orange bags contain 2 dark yellow bags.",
+					"dark yellow bags contain 2 dark green bags.",
+					"dark green bags contain 2 dark blue bags.",
+					"dark blue bags contain 2 dark violet bags.",
+					"dark violet bags contain no other bags.",
+				},
+			},
+		},
+		{
+			name:    "small example 2",
+			want:    32,
 			wantErr: false,
 			args: args{
 				input: []string{
@@ -102,7 +143,7 @@ func TestSolveDay7Part2(t *testing.T) {
 		},
 		{
 			name: "real input",
-			want: 0,
+			want: 30899,
 			args: args{
 				input: realInput,
 			},
