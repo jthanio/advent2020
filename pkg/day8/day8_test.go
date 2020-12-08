@@ -84,7 +84,7 @@ func TestSolveDay8Part2(t *testing.T) {
 	}{
 		{
 			name:    "real input",
-			want:    0,
+			want:    631,
 			wantErr: false,
 			args: args{
 				input: realInput,
