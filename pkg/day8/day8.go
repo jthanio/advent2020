@@ -24,7 +24,7 @@ func SolveDay8Part1(input []string) (int, error) {
 	return acc, nil
 }
 
-// SolveDay8Part2 is not yet implemented.
+// SolveDay8Part2 finds the erroneous instruction by replacing a single instruction at a time and by testing whether it fixes the loop.
 func SolveDay8Part2(input []string) (int, error) {
 	var acc int
 	for i, line := range input {
