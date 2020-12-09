@@ -85,3 +85,33 @@ func TestSolveDay9Part2(t *testing.T) {
 		})
 	}
 }
+
+var out int // A global variable to avoid optimizations
+
+// Before optimization
+// goos: linux
+// goarch: amd64
+// pkg: github.com/jthanio/advent2020/pkg/day9
+// BenchmarkSolveDay9Part2-16    	      27	  41431141 ns/op	 2954917 B/op	    2205 allocs/op
+// PASS
+// ok  	github.com/jthanio/advent2020/pkg/day9	1.165s
+
+// After optimization
+// goos: linux
+// goarch: amd64
+// pkg: github.com/jthanio/advent2020/pkg/day9
+// BenchmarkSolveDay9Part2-16    	     146	   8203799 ns/op	 2954811 B/op	    2202 allocs/op
+// PASS
+// ok  	github.com/jthanio/advent2020/pkg/day9	2.030s
+
+func BenchmarkSolveDay9Part2(b *testing.B) {
+	var x int
+	for n := 0; n < b.N; n++ {
+		var err error
+		x, err = SolveDay9Part2(realInput)
+		if err != nil {
+			b.Fatal(err)
+		}
+	}
+	out = x // Assign to the global variable to avoid compiler optimization
+}

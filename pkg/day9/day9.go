@@ -29,7 +29,7 @@ func SolveDay9Part2(input []int) (int, error) {
 func findContiguousSummation(target int, numSlice []int) []int {
 	for i := 0; i < len(numSlice); i++ {
 		var sum int
-		for j := i; j < len(numSlice); j++ {
+		for j := i; j < len(numSlice) && sum < target; j++ {
 			s := numSlice[i:j]
 			sum = sumSlice(numSlice[i:j])
 			if sum == target {
