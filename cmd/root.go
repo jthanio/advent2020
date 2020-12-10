@@ -6,6 +6,7 @@ import (
 
 	"github.com/jthanio/advent2020/internal"
 	"github.com/jthanio/advent2020/pkg/day1"
+	"github.com/jthanio/advent2020/pkg/day10"
 	"github.com/jthanio/advent2020/pkg/day2"
 	"github.com/jthanio/advent2020/pkg/day3"
 	"github.com/jthanio/advent2020/pkg/day4"
