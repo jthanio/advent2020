@@ -48,10 +48,6 @@ func countPermutations(input []int, from, to int) int {
 		to: 1, // The last hop is always 1
 	}
 	adaptors := createIntSet(input)
-	for _, v := range input {
-		adaptors[v] = struct{}{}
-	}
-
 	return countPermutationsHelper(memo, adaptors, from)
 }
 
@@ -79,10 +75,10 @@ func selectNextAdaptor(current int, adaptors map[int]struct{}) (int, error) {
 	return 0, fmt.Errorf("found no appropriate adaptor for %d jolts", current)
 }
 
-func createIntSet(s []int) (set map[int]struct{}) {
-	set = make(map[int]struct{}, len(s))
+func createIntSet(s []int) map[int]struct{} {
+	set := make(map[int]struct{})
 	for _, v := range s {
 		set[v] = struct{}{}
 	}
-	return
+	return set
 }
