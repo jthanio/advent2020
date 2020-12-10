@@ -220,8 +220,8 @@ var dayCommands = []*cobra.Command{
 				return err
 			}
 
-			fmt.Printf("The answer to the Day 9 part 1 puzzle: %d\n", a1)
-			fmt.Printf("The answer to the Day 9 part 2 puzzle: %d\n", a2)
+			fmt.Printf("The answer to the Day 10 part 1 puzzle: %d\n", a1)
+			fmt.Printf("The answer to the Day 10 part 2 puzzle: %d\n", a2)
 			return nil
 		},
 	},
