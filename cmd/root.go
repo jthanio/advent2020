@@ -201,6 +201,29 @@ var dayCommands = []*cobra.Command{
 			return nil
 		},
 	},
+	{
+		Use: "day10",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			input, err := internal.LoadIntInputFile(cmd.Flags().Lookup("input").Value.String())
+			if err != nil {
+				return err
+			}
+
+			a1, err := day10.SolveDay10Part1(input)
+			if err != nil {
+				return err
+			}
+
+			a2, err := day10.SolveDay10Part2(input)
+			if err != nil {
+				return err
+			}
+
+			fmt.Printf("The answer to the Day 9 part 1 puzzle: %d\n", a1)
+			fmt.Printf("The answer to the Day 9 part 2 puzzle: %d\n", a2)
+			return nil
+		},
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
