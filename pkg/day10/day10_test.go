@@ -185,7 +185,7 @@ func TestSolveDay10Part2(t *testing.T) {
 		},
 		{
 			name:    "real input",
-			want:    0,
+			want:    4628074479616,
 			wantErr: false,
 			args: args{
 				input: realInput,
