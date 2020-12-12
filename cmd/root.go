@@ -7,6 +7,7 @@ import (
 	"github.com/jthanio/advent2020/internal"
 	"github.com/jthanio/advent2020/pkg/day1"
 	"github.com/jthanio/advent2020/pkg/day10"
+	"github.com/jthanio/advent2020/pkg/day11"
 	"github.com/jthanio/advent2020/pkg/day2"
 	"github.com/jthanio/advent2020/pkg/day3"
 	"github.com/jthanio/advent2020/pkg/day4"
@@ -222,6 +223,29 @@ var dayCommands = []*cobra.Command{
 
 			fmt.Printf("The answer to the Day 10 part 1 puzzle: %d\n", a1)
 			fmt.Printf("The answer to the Day 10 part 2 puzzle: %d\n", a2)
+			return nil
+		},
+	},
+	{
+		Use: "day11",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			input, err := internal.LoadStringInputFile(cmd.Flags().Lookup("input").Value.String())
+			if err != nil {
+				return err
+			}
+
+			a1, err := day11.SolveDay11Part1(input)
+			if err != nil {
+				return err
+			}
+
+			a2, err := day11.SolveDay11Part2(input)
+			if err != nil {
+				return err
+			}
+
+			fmt.Printf("The answer to the Day 8 part 1 puzzle: %d\n", a1)
+			fmt.Printf("The answer to the Day 8 part 2 puzzle: %d\n", a2)
 			return nil
 		},
 	},

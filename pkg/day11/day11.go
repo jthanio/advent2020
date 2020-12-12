@@ -1,31 +1,24 @@
 package day11
 
-// Now, you just need to model the people who will be arriving shortly. Fortunately, people are entirely predictable and always follow a simple set of rules.
-// All decisions are based on the number of occupied seats adjacent to a given seat (one of the eight positions immediately up, down, left, right, or diagonal from the seat).
-// The following rules are applied to every seat simultaneously:
-
-// If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
-// If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
-// Otherwise, the seat's state does not change.
-// Floor (.) never changes; seats don't move, and nobody sits on the floor.
-
 const (
-	floorRune    = '.'
-	emptyRune    = 'L'
-	occupiedRune = '#'
+	floorRune      = '.'
+	emptyRune      = 'L'
+	occupiedRune   = '#'
+	tolerancePart1 = 4
+	tolerancePart2 = 5
 )
 
 // SolveDay11Part1 simulates seating rules and then counts the total number of occupied seats.
 func SolveDay11Part1(input []string) (int, error) {
 	prev := newGrid(input)
-	next := prev.createNextGridState()
+	next := createNextGridState(prev, tolerancePart1)
 
-	for !gridEquals(prev, next) {
+	for !gridStateEquals(prev, next) {
 		prev = next
-		next = prev.createNextGridState()
+		next = createNextGridState(prev, tolerancePart1)
 	}
 
-	return next.numOccupied(), nil
+	return numOccupied(next), nil
 }
 
 // SolveDay11Part2 is not yet implemented.
@@ -33,28 +26,26 @@ func SolveDay11Part2(input []string) (int, error) {
 	return 0, nil
 }
 
-type grid [][]rune
-
-func newGrid(input []string) grid {
-	g := make(grid, len(input))
+func newGrid(input []string) [][]rune {
+	g := make([][]rune, len(input))
 	for y, row := range input {
 		g[y] = []rune(row)
 	}
 	return g
 }
 
-func gridEquals(g1, g2 grid) bool {
-	if g1 == nil {
-		return g2 == nil // If they are both nil, they are equal
+func gridStateEquals(s1, s2 [][]rune) bool {
+	if s1 == nil {
+		return s2 == nil // If they are both nil, they are equal
 	}
 
-	if g2 == nil {
-		return g1 == nil
+	if s2 == nil {
+		return s1 == nil
 	}
 
-	for y, row := range g1 {
+	for y, row := range s1 {
 		for x, r := range row {
-			if r != g2[y][x] {
+			if r != s2[y][x] {
 				return false
 			}
 		}
@@ -62,10 +53,10 @@ func gridEquals(g1, g2 grid) bool {
 	return true
 }
 
-func (g grid) numOccupied() (num int) {
-	for y := range g {
-		for x := range g[y] {
-			if g[y][x] == occupiedRune {
+func numOccupied(grid [][]rune) (num int) {
+	for _, row := range grid {
+		for _, r := range row {
+			if r == occupiedRune {
 				num++
 			}
 		}
@@ -73,101 +64,101 @@ func (g grid) numOccupied() (num int) {
 	return
 }
 
-func (g grid) createNextGridState() grid {
-	next := make(grid, len(g))
-	for y, row := range g {
+func createNextGridState(grid [][]rune, tolerance int) [][]rune {
+	next := make([][]rune, len(grid))
+	for y, row := range grid {
 		nextRow := make([]rune, len(row))
 		for x, r := range row {
-			nextRow[x] = getNextPosition(g.getAdjacentRunes(len(row)-1, x, y), r)
+			nextRow[x] = getNextPosition(getAdjacentRunes(grid, 0, len(row)-1, 0, len(grid)-1, x, y), r, tolerance)
 		}
 		next[y] = nextRow
 	}
 	return next
 }
 
-func (g grid) getAdjacentRunes(xMax, x, y int) []rune {
+func getAdjacentRunes(r [][]rune, xMin, xMax, yMin, yMax, x, y int) []rune {
 	switch {
 	// Top left corner
-	case x-1 < 0 && y-1 < 0:
+	case x-1 < xMin && y-1 < yMin:
 		return []rune{
-			g[y][x+1],
-			g[y+1][x],
-			g[y+1][x+1],
+			r[y][x+1],
+			r[y+1][x],
+			r[y+1][x+1],
 		}
 	// Top right corner
-	case x+1 > xMax && y-1 < 0:
+	case x+1 > xMax && y-1 < yMin:
 		return []rune{
-			g[y][x-1],
-			g[y+1][x-1],
-			g[y+1][x],
+			r[y][x-1],
+			r[y+1][x-1],
+			r[y+1][x],
 		}
 	// Bottom left corner
-	case x-1 < 0 && y+1 >= len(g):
+	case x-1 < xMin && y+1 > yMax:
 		return []rune{
-			g[y-1][x],
-			g[y-1][x+1],
-			g[y][x+1],
+			r[y-1][x],
+			r[y-1][x+1],
+			r[y][x+1],
 		}
 	// Bottom right corner
-	case x+1 > xMax && y+1 >= len(g):
+	case x+1 > xMax && y+1 > yMax:
 		return []rune{
-			g[y-1][x-1],
-			g[y-1][x],
-			g[y][x-1],
+			r[y-1][x-1],
+			r[y-1][x],
+			r[y][x-1],
 		}
 	// Left edge
-	case x-1 < 0 && y-1 >= 0 && y+1 < len(g):
+	case x-1 < xMin && y-1 >= yMin && y+1 <= yMax:
 		return []rune{
-			g[y-1][x],
-			g[y-1][x+1],
-			g[y][x+1],
-			g[y+1][x],
-			g[y+1][x+1],
+			r[y-1][x],
+			r[y-1][x+1],
+			r[y][x+1],
+			r[y+1][x],
+			r[y+1][x+1],
 		}
 	// Right edge
-	case x+1 > xMax && y-1 >= 0 && y+1 < len(g):
+	case x+1 > xMax && y-1 >= yMin && y+1 <= yMax:
 		return []rune{
-			g[y-1][x-1],
-			g[y-1][x],
-			g[y][x-1],
-			g[y+1][x-1],
-			g[y+1][x],
+			r[y-1][x-1],
+			r[y-1][x],
+			r[y][x-1],
+			r[y+1][x-1],
+			r[y+1][x],
 		}
 	// Top edge
-	case y-1 < 0 && x-1 >= 0 && x+1 <= xMax:
+	case x-1 >= xMin && x+1 <= xMax && y-1 < yMin:
 		return []rune{
-			g[y][x-1],
-			g[y][x+1],
-			g[y+1][x-1],
-			g[y+1][x],
-			g[y+1][x+1],
+			r[y][x-1],
+			r[y][x+1],
+			r[y+1][x-1],
+			r[y+1][x],
+			r[y+1][x+1],
 		}
 	// Bottom edge
-	case y+1 >= len(g) && x-1 >= 0 && x+1 <= xMax:
+	case x-1 >= xMin && x+1 <= xMax && y+1 > yMax:
 		return []rune{
-			g[y-1][x-1],
-			g[y-1][x],
-			g[y-1][x+1],
-			g[y][x-1],
-			g[y][x+1],
+			r[y-1][x-1],
+			r[y-1][x],
+			r[y-1][x+1],
+			r[y][x-1],
+			r[y][x+1],
 		}
 	}
 	return []rune{
-		g[y-1][x-1],
-		g[y-1][x],
-		g[y-1][x+1],
-		g[y][x-1],
-		g[y][x+1],
-		g[y+1][x-1],
-		g[y+1][x],
-		g[y+1][x+1],
+		r[y-1][x-1],
+		r[y-1][x],
+		r[y-1][x+1],
+		r[y][x-1],
+		r[y][x+1],
+		r[y+1][x-1],
+		r[y+1][x],
+		r[y+1][x+1],
 	}
 }
 
-func getNextPosition(adjacent []rune, current rune) rune {
+func getNextPosition(adjacent []rune, current rune, crowdTolerance int) rune {
 	switch current {
 	case occupiedRune:
-		if countRune(adjacent, occupiedRune) >= 4 {
+		if countRune(adjacent, occupiedRune) >= crowdTolerance {
 			return emptyRune // Too crowded, I'm leaving
 		}
 	case emptyRune:
