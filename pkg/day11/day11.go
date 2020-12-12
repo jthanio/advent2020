@@ -11,11 +11,11 @@ const (
 // SolveDay11Part1 simulates seating rules and then counts the total number of occupied seats.
 func SolveDay11Part1(input []string) (int, error) {
 	prev := newGrid(input)
-	next := createNextGridState(prev, tolerancePart1)
+	next := createNextGridState(prev, tolerancePart1, false)
 
 	for !gridStateEquals(prev, next) {
 		prev = next
-		next = createNextGridState(prev, tolerancePart1)
+		next = createNextGridState(prev, tolerancePart1, false)
 	}
 
 	return numOccupied(next), nil
@@ -23,7 +23,15 @@ func SolveDay11Part1(input []string) (int, error) {
 
 // SolveDay11Part2 is not yet implemented.
 func SolveDay11Part2(input []string) (int, error) {
-	return 0, nil
+	prev := newGrid(input)
+	next := createNextGridState(prev, tolerancePart2, true)
+
+	for !gridStateEquals(prev, next) {
+		prev = next
+		next = createNextGridState(prev, tolerancePart2, true)
+	}
+
+	return numOccupied(next), nil
 }
 
 func newGrid(input []string) [][]rune {
@@ -64,16 +72,91 @@ func numOccupied(grid [][]rune) (num int) {
 	return
 }
 
-func createNextGridState(grid [][]rune, tolerance int) [][]rune {
+func createNextGridState(grid [][]rune, tolerance int, lineAdjacency bool) [][]rune {
 	next := make([][]rune, len(grid))
 	for y, row := range grid {
 		nextRow := make([]rune, len(row))
 		for x, r := range row {
-			nextRow[x] = getNextPosition(getAdjacentRunes(grid, 0, len(row)-1, 0, len(grid)-1, x, y), r, tolerance)
+			var adjacent []rune
+			if lineAdjacency {
+				adjacent = getNearestSeats(grid, 0, len(row)-1, 0, len(grid)-1, x, y) // Use line-based adjacency check
+			} else {
+				adjacent = getAdjacentRunes(grid, 0, len(row)-1, 0, len(grid)-1, x, y) // Use the simple adjacency check
+			}
+			nextRow[x] = getUpdatedPosition(adjacent, r, tolerance)
 		}
 		next[y] = nextRow
 	}
 	return next
+}
+
+func isWithinBounds(xMin, xMax, yMin, yMax, x, y int) bool {
+	return x >= xMin && x <= xMax && y >= yMin && y <= yMax
+}
+
+func addInts(i, j, di, dj int) (int, int) {
+	return i + di, j + dj
+}
+
+func getNearestSeats(r [][]rune, xMin, xMax, yMin, yMax, x, y int) []rune {
+	var out []rune
+	// Left direction
+	for i, j := addInts(x, y, -1, 0); isWithinBounds(xMin, xMax, yMin, yMax, i, j); i, j = addInts(i, j, -1, 0) {
+		if r[j][i] == emptyRune || r[j][i] == occupiedRune {
+			out = append(out, r[j][i])
+			break
+		}
+	}
+	// Right direction
+	for i, j := addInts(x, y, 1, 0); isWithinBounds(xMin, xMax, yMin, yMax, i, j); i, j = addInts(i, j, 1, 0) {
+		if r[j][i] == emptyRune || r[j][i] == occupiedRune {
+			out = append(out, r[j][i])
+			break
+		}
+	}
+	// Up direction
+	for i, j := addInts(x, y, 0, -1); isWithinBounds(xMin, xMax, yMin, yMax, i, j); i, j = addInts(i, j, 0, -1) {
+		if r[j][i] == emptyRune || r[j][i] == occupiedRune {
+			out = append(out, r[j][i])
+			break
+		}
+	}
+	// Down direction
+	for i, j := addInts(x, y, 0, 1); isWithinBounds(xMin, xMax, yMin, yMax, i, j); i, j = addInts(i, j, 0, 1) {
+		if r[j][i] == emptyRune || r[j][i] == occupiedRune {
+			out = append(out, r[j][i])
+			break
+		}
+	}
+	// Upper left diagonal direction
+	for i, j := addInts(x, y, -1, -1); isWithinBounds(xMin, xMax, yMin, yMax, i, j); i, j = addInts(i, j, -1, -1) {
+		if r[j][i] == emptyRune || r[j][i] == occupiedRune {
+			out = append(out, r[j][i])
+			break
+		}
+	}
+	// Upper right diagonal direction
+	for i, j := addInts(x, y, 1, -1); isWithinBounds(xMin, xMax, yMin, yMax, i, j); i, j = addInts(i, j, 1, -1) {
+		if r[j][i] == emptyRune || r[j][i] == occupiedRune {
+			out = append(out, r[j][i])
+			break
+		}
+	}
+	// Lower left diagonal direction
+	for i, j := addInts(x, y, -1, 1); isWithinBounds(xMin, xMax, yMin, yMax, i, j); i, j = addInts(i, j, -1, 1) {
+		if r[j][i] == emptyRune || r[j][i] == occupiedRune {
+			out = append(out, r[j][i])
+			break
+		}
+	}
+	// Lower right diagonal direction
+	for i, j := addInts(x, y, 1, 1); isWithinBounds(xMin, xMax, yMin, yMax, i, j); i, j = addInts(i, j, 1, 1) {
+		if r[j][i] == emptyRune || r[j][i] == occupiedRune {
+			out = append(out, r[j][i])
+			break
+		}
+	}
+	return out
 }
 
 func getAdjacentRunes(r [][]rune, xMin, xMax, yMin, yMax, x, y int) []rune {
@@ -155,7 +238,7 @@ func getAdjacentRunes(r [][]rune, xMin, xMax, yMin, yMax, x, y int) []rune {
 	}
 }
 
-func getNextPosition(adjacent []rune, current rune, crowdTolerance int) rune {
+func getUpdatedPosition(adjacent []rune, current rune, crowdTolerance int) rune {
 	switch current {
 	case occupiedRune:
 		if countRune(adjacent, occupiedRune) >= crowdTolerance {

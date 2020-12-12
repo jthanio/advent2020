@@ -82,7 +82,33 @@ func TestSolveDay11Part2(t *testing.T) {
 		want    int
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name:    "small example",
+			want:    26,
+			wantErr: false,
+			args: args{
+				input: []string{
+					"L.LL.LL.LL",
+					"LLLLLLL.LL",
+					"L.L.L..L..",
+					"LLLL.LL.LL",
+					"L.LL.LL.LL",
+					"L.LLLLL.LL",
+					"..L.L.....",
+					"LLLLLLLLLL",
+					"L.LLLLLL.L",
+					"L.LLLLL.LL",
+				},
+			},
+		},
+		{
+			name:    "real input",
+			want:    2214,
+			wantErr: false,
+			args: args{
+				input: realInput,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
