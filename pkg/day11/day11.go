@@ -21,7 +21,7 @@ func SolveDay11Part1(input []string) (int, error) {
 	return numOccupied(next), nil
 }
 
-// SolveDay11Part2 is not yet implemented.
+// SolveDay11Part2 simulates seating rules with line-based seat adjacency checks and a seat tolerance of 5.
 func SolveDay11Part2(input []string) (int, error) {
 	prev := newGrid(input)
 	next := createNextGridState(prev, tolerancePart2, true)
